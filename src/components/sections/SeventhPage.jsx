@@ -45,7 +45,10 @@ const SeventhPage = () => {
   }, []);
 
   return (
-    <section ref={rootRef} className="bg-black text-white font-bricolage">
+    <section
+      ref={rootRef}
+      className="bg-black text-white lowercase font-bricolage"
+    >
       <div ref={pinRef} className="relative min-h-screen w-full">
         {/* content wrapper */}
         <div className="relative w-full min-h-screen max-w-[1400px] mx-auto px-6 md:px-0 pt-20 md:pt-20 pb-16 md:pb-10 flex flex-col md:flex-row items-start">
