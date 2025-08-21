@@ -22,7 +22,7 @@ const FooterPage = () => {
 
       {/* Button */}
       <button className="bg-white text-black rounded-xl px-6 py-3 flex items-center gap-2 font-medium lowercase hover:scale-105 transition">
-        try again <ArrowRight size={18} />
+        join the waitlist <ArrowRight size={18} />
       </button>
     </div>
   );

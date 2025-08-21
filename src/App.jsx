@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import PreloaderSequence from './components/PreloaderSequence';
-import LandingPage from './components/LandingPage';
+import React, { useState } from "react";
+import PreloaderSequence from "./components/PreloaderSequence";
+import LandingPage from "./components/LandingPage";
 
 function App() {
   const [showPreloader, setShowPreloader] = useState(true);

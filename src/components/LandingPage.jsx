@@ -323,7 +323,36 @@
 
 // export default LandingPage;
 
+// import React from "react";
+// import FirstPage from "./sections/FirstPage.jsx";
+// import SecondPage from "./sections/SecondPage.jsx";
+// import ThirdPage from "./sections/ThirdPage.jsx";
+// import FourthPage from "./sections/FourthPage.jsx";
+// import FifthPage from "./sections/FifthPage.jsx";
+// import FooterPage from "./sections/FooterPage.jsx";
+// import SixthPage from "./sections/SixthPage.jsx";
+// import SeventhPage from "./sections/SeventhPage.jsx";
+
+// const LandingPage = () => {
+//   return (
+//     <div className="bg-black text-white">
+//       <FirstPage />
+//       {/* add more pages/sections below as you go */}
+//       <SecondPage />
+//       <ThirdPage />
+//       <FourthPage />
+//       <FifthPage />
+//       <SixthPage />
+//       <SeventhPage />
+//       <FooterPage />
+//     </div>
+//   );
+// };
+
+// export default LandingPage;
+
 import React from "react";
+import { evolveLogo } from "../assets/images";
 import FirstPage from "./sections/FirstPage.jsx";
 import SecondPage from "./sections/SecondPage.jsx";
 import ThirdPage from "./sections/ThirdPage.jsx";
@@ -332,18 +361,36 @@ import FifthPage from "./sections/FifthPage.jsx";
 import FooterPage from "./sections/FooterPage.jsx";
 import SixthPage from "./sections/SixthPage.jsx";
 import SeventhPage from "./sections/SeventhPage.jsx";
+import ToolkitPage from "./sections/ToolkitPage.jsx";
+import WhyNowPage from "./sections/WhyNowPage.jsx";
 
 const LandingPage = () => {
   return (
     <div className="bg-black text-white">
+      {/* matches peel scene docking: margin x=20px, y=18px; width 110px (mobile), 140px (md+) */}
+      <header className="fixed top-0 left-0 w-full z-40">
+        <div
+          className="pointer-events-none"
+          style={{ paddingTop: 18, paddingLeft: 20 }}
+        >
+          <img
+            src={evolveLogo}
+            alt="evolve"
+            className="w-[110px] md:w-[140px] h-auto select-none"
+            draggable={false}
+          />
+        </div>
+      </header>
+
       <FirstPage />
-      {/* add more pages/sections below as you go */}
-      <SecondPage />
+      {/* <SecondPage /> */}
       <ThirdPage />
       <FourthPage />
+      <ToolkitPage />
       <FifthPage />
       <SixthPage />
       <SeventhPage />
+      {/* <WhyNowPage /> */}
       <FooterPage />
     </div>
   );

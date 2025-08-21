@@ -793,19 +793,299 @@
 
 // export default PreloaderSequence;
 
+// import React, { useState, useEffect } from "react";
+// import { evolveLogo } from "../assets/images"; // ✅ imported evolve logo
+// import GlassShatterEffect from "./GlassShatterEffect.jsx";
+// import ParticleBackground from "./ParticleBackground.jsx";
+// import PeelScene from "./PeelScene.jsx";
+
+// const PreloaderSequence = ({ onComplete }) => {
+//   const [stage, setStage] = useState("glass");
+//   const [clickCount, setClickCount] = useState(0);
+//   const [textVisible, setTextVisible] = useState(false);
+
+//   const handleGlassClick = () => {
+//     setClickCount((prev) => Math.min(prev + 1, 3));
+//   };
+
+//   const handleShatterComplete = () => {
+//     setStage("particles");
+//   };
+
+//   const handleParticlesComplete = () => {
+//     setStage("logo");
+//     setTextVisible(true);
+//   };
+
+//   // useEffect(() => {
+//   //   let timer;
+
+//   //   if (stage === "logo" && textVisible) {
+//   //     timer = setTimeout(() => {
+//   //       setStage("peel");
+//   //     }, 4000);
+//   //   } else if (stage === "peel") {
+//   //     timer = setTimeout(() => {
+//   //       setStage("complete");
+//   //       onComplete();
+//   //     }, 2500); // slight increase for cinematic feel
+//   //   }
+
+//   // return () => clearTimeout(timer);
+//   // }, [stage, textVisible, onComplete]);
+
+//   // PreloaderSequence.jsx (fix)
+//   useEffect(() => {
+//     let timer;
+
+//     if (stage === "logo" && textVisible) {
+//       timer = setTimeout(() => {
+//         setStage("peel");
+//       }, 4000);
+//     }
+
+//     return () => clearTimeout(timer);
+//   }, [stage, textVisible, onComplete]);
+
+//   if (stage === "complete") return null;
+
+//   return (
+//     <div className="fixed inset-0 z-50 font-bricolage">
+//       {/* Glass Breaking Stage */}
+//       {stage === "glass" && (
+//         <div
+//           className="w-full h-full bg-evolve-black flex items-center justify-center cursor-pointer relative overflow-hidden"
+//           onClick={handleGlassClick}
+//         >
+//           <GlassShatterEffect
+//             clickCount={clickCount}
+//             onComplete={handleShatterComplete}
+//           />
+
+//           {stage === "glass" && (
+//             <div className="absolute text-center text-evolve-white opacity-70 z-20">
+//               {clickCount < 3 && (
+//                 <div className="text-4xl font-extrabold lowercase font-bricolage mb-4">
+//                   Break the Template
+//                 </div>
+//               )}
+//               <div className="flex justify-center space-x-2">
+//                 {Array.from({ length: 3 }, (_, i) => (
+//                   <div
+//                     key={i}
+//                     className={`w-3 h-3 rounded-full transition-all duration-300 ${
+//                       i < clickCount ? "bg-evolve-heliotrope" : "bg-evolve-gray"
+//                     }`}
+//                   />
+//                 ))}
+//               </div>
+//             </div>
+//           )}
+//         </div>
+//       )}
+
+//       {/* Particle Background + Text Sequence */}
+//       {stage === "particles" && (
+//         <ParticleBackground onComplete={handleParticlesComplete} />
+//       )}
+
+//       {/* Logo Stage */}
+//       {stage === "logo" && (
+//         <div className="w-full h-full bg-evolve-lavender-indigo flex flex-col items-center justify-center">
+//           <div
+//             className={`text-center transition-all duration-1500 ${
+//               textVisible ? "animate-text-reveal" : "opacity-0"
+//             }`}
+//           >
+//             <div className="flex items-center justify-center mb-5">
+//               <img
+//                 src={evolveLogo}
+//                 alt="Evolve Logo"
+//                 className="w-[15rem] h-auto animate-logo-shine"
+//               />
+//             </div>
+//             <div className="text-2xl md:text-4xl font-bricolage text-evolve-white font-bold lowercase">
+//               be remarkable.
+//             </div>
+//           </div>
+//         </div>
+//       )}
+
+//       {/* Page Peel Stage */}
+//       {stage === "peel" && (
+//         <div className="w-full h-full bg-black">
+//           <PeelScene
+//             onComplete={() => {
+//               setStage("complete");
+//               onComplete();
+//             }}
+//           />
+//         </div>
+//       )}
+//     </div>
+//   );
+// };
+
+// export default PreloaderSequence;
+
+// PreloaderSequence.jsx
+// import React, { useState, useEffect } from "react";
+// import { evolveLogo } from "../assets/images";
+// import GlassShatterEffect from "./GlassShatterEffect.jsx";
+// import ParticleBackground from "./ParticleBackground.jsx";
+// import PeelScene from "./PeelScene.jsx";
+
+// const PreloaderSequence = ({ onComplete }) => {
+//   const [stage, setStage] = useState("glass");
+//   const [clickCount, setClickCount] = useState(0);
+//   const [textVisible, setTextVisible] = useState(false);
+
+//   // lock page scroll while preloader is active
+//   useEffect(() => {
+//     const html = document.documentElement;
+//     const prev = html.style.overflow;
+//     html.style.overflow = "hidden";
+//     return () => {
+//       html.style.overflow = prev;
+//     };
+//   }, []);
+
+//   const handleGlassClick = () => {
+//     setClickCount((prev) => Math.min(prev + 1, 3));
+//   };
+
+//   const handleShatterComplete = () => {
+//     setStage("particles");
+//   };
+
+//   const handleParticlesComplete = () => {
+//     setStage("logo");
+//     setTextVisible(true);
+//   };
+
+//   // move from logo hold to peel scene
+//   useEffect(() => {
+//     let timer;
+//     if (stage === "logo" && textVisible) {
+//       timer = setTimeout(() => {
+//         setStage("peel");
+//       }, 4000); // hold your logo + line before peel
+//     }
+//     return () => clearTimeout(timer);
+//   }, [stage, textVisible]);
+
+//   if (stage === "complete") return null;
+
+//   return (
+//     <div className="fixed inset-0 z-50 font-bricolage overflow-hidden">
+//       {/* 1) Glass Breaking */}
+//       {stage === "glass" && (
+//         <div
+//           className="w-full h-full bg-evolve-black flex items-center justify-center cursor-pointer relative overflow-hidden"
+//           onClick={handleGlassClick}
+//         >
+//           <GlassShatterEffect
+//             clickCount={clickCount}
+//             onComplete={handleShatterComplete}
+//           />
+
+//           {/* helper text + dots while in glass stage */}
+//           <div className="absolute text-center text-evolve-white opacity-70 z-20">
+//             {clickCount < 3 && (
+//               <div className="text-4xl font-extrabold lowercase font-bricolage mb-4">
+//                 Break the Template
+//               </div>
+//             )}
+//             <div className="flex justify-center space-x-2">
+//               {Array.from({ length: 3 }, (_, i) => (
+//                 <div
+//                   key={i}
+//                   className={`w-3 h-3 rounded-full transition-all duration-300 ${
+//                     i < clickCount ? "bg-evolve-heliotrope" : "bg-evolve-gray"
+//                   }`}
+//                 />
+//               ))}
+//             </div>
+//           </div>
+//         </div>
+//       )}
+
+//       {/* 2) Particles + credits text */}
+//       {stage === "particles" && (
+//         <ParticleBackground onComplete={handleParticlesComplete} />
+//       )}
+
+//       {/* 3) Logo hold */}
+//       {stage === "logo" && (
+//         <div className="w-full h-full bg-evolve-lavender-indigo flex flex-col items-center justify-center">
+//           <div
+//             className={`text-center transition-all duration-1500 ${
+//               textVisible ? "animate-text-reveal" : "opacity-0"
+//             }`}
+//           >
+//             <div className="flex items-center justify-center mb-5">
+//               <img
+//                 src={evolveLogo}
+//                 alt="Evolve Logo"
+//                 className="w-[15rem] h-auto animate-logo-shine"
+//               />
+//             </div>
+//             <div className="text-2xl md:text-4xl font-bricolage text-evolve-white font-bold lowercase">
+//               be remarkable.
+//             </div>
+//           </div>
+//         </div>
+//       )}
+
+//       {/* 4) Peel scene with down arrow prompt. 
+//           It calls onComplete only after the logo docks top-left, 
+//           then this whole preloader unmounts. */}
+//       {stage === "peel" && (
+//         <div className="w-full h-full bg-black">
+//           <PeelScene
+//             onComplete={() => {
+//               setStage("complete");
+//               onComplete?.();
+//             }}
+//           />
+//         </div>
+//       )}
+//     </div>
+//   );
+// };
+
+// export default PreloaderSequence;
+
+
+// PreloaderSequence.jsx
 import React, { useState, useEffect } from "react";
-import { evolveLogo } from "../assets/images"; // ✅ imported evolve logo
+import { evolveLogo } from "../assets/images";
 import GlassShatterEffect from "./GlassShatterEffect.jsx";
 import ParticleBackground from "./ParticleBackground.jsx";
 import PeelScene from "./PeelScene.jsx";
 
 const PreloaderSequence = ({ onComplete }) => {
   const [stage, setStage] = useState("glass");
-  const [clickCount, setClickCount] = useState(0);
+  const [clickCount, setClickCount] = useState(0); // kept for compatibility with GlassShatterEffect
   const [textVisible, setTextVisible] = useState(false);
+  const [glassHintVisible, setGlassHintVisible] = useState(true);
 
+  // lock page scroll while preloader is active
+  useEffect(() => {
+    const html = document.documentElement;
+    const prev = html.style.overflow;
+    html.style.overflow = "hidden";
+    return () => {
+      html.style.overflow = prev;
+    };
+  }, []);
+
+  // one-click to shatter (no dots)
   const handleGlassClick = () => {
-    setClickCount((prev) => Math.min(prev + 1, 3));
+    if (clickCount === 0) {
+      setGlassHintVisible(false); // hide helper text immediately
+      setClickCount(3);           // jump straight to "fully shattered" for one-click flow
+    }
   };
 
   const handleShatterComplete = () => {
@@ -817,79 +1097,55 @@ const PreloaderSequence = ({ onComplete }) => {
     setTextVisible(true);
   };
 
-  // useEffect(() => {
-  //   let timer;
-
-  //   if (stage === "logo" && textVisible) {
-  //     timer = setTimeout(() => {
-  //       setStage("peel");
-  //     }, 4000);
-  //   } else if (stage === "peel") {
-  //     timer = setTimeout(() => {
-  //       setStage("complete");
-  //       onComplete();
-  //     }, 2500); // slight increase for cinematic feel
-  //   }
-
-  // return () => clearTimeout(timer);
-  // }, [stage, textVisible, onComplete]);
-
-  // PreloaderSequence.jsx (fix)
+  // move from logo hold to peel scene
   useEffect(() => {
     let timer;
-
     if (stage === "logo" && textVisible) {
       timer = setTimeout(() => {
         setStage("peel");
-      }, 4000);
+      }, 4000); // hold your logo + line before peel
     }
-
     return () => clearTimeout(timer);
-  }, [stage, textVisible, onComplete]);
+  }, [stage, textVisible]);
 
   if (stage === "complete") return null;
 
   return (
-    <div className="fixed inset-0 z-50 font-bricolage">
-      {/* Glass Breaking Stage */}
+    <div className="fixed inset-0 z-50 font-bricolage overflow-hidden">
+      {/* 1) Glass Breaking */}
       {stage === "glass" && (
         <div
           className="w-full h-full bg-evolve-black flex items-center justify-center cursor-pointer relative overflow-hidden"
           onClick={handleGlassClick}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") handleGlassClick();
+          }}
+          role="button"
+          tabIndex={0}
+          aria-label="Break the template"
         >
           <GlassShatterEffect
             clickCount={clickCount}
             onComplete={handleShatterComplete}
           />
 
-          {stage === "glass" && (
-            <div className="absolute text-center text-evolve-white opacity-70 z-20">
-              {clickCount < 3 && (
-                <div className="text-4xl font-extrabold lowercase font-bricolage mb-4">
-                  Break the Template
-                </div>
-              )}
-              <div className="flex justify-center space-x-2">
-                {Array.from({ length: 3 }, (_, i) => (
-                  <div
-                    key={i}
-                    className={`w-3 h-3 rounded-full transition-all duration-300 ${
-                      i < clickCount ? "bg-evolve-heliotrope" : "bg-evolve-gray"
-                    }`}
-                  />
-                ))}
+          {/* helper text (no dots) */}
+          {glassHintVisible && (
+            <div className="absolute text-center text-evolve-white opacity-70 z-20 select-none">
+              <div className="text-4xl font-extrabold lowercase font-bricolage mb-4">
+                break the template
               </div>
             </div>
           )}
         </div>
       )}
 
-      {/* Particle Background + Text Sequence */}
+      {/* 2) Particles + credits text */}
       {stage === "particles" && (
         <ParticleBackground onComplete={handleParticlesComplete} />
       )}
 
-      {/* Logo Stage */}
+      {/* 3) Logo hold */}
       {stage === "logo" && (
         <div className="w-full h-full bg-evolve-lavender-indigo flex flex-col items-center justify-center">
           <div
@@ -911,15 +1167,13 @@ const PreloaderSequence = ({ onComplete }) => {
         </div>
       )}
 
-      {/* Page Peel Stage */}
-      {/* Page Peel Stage */}
-      {/* Page Peel Stage */}
+      {/* 4) Peel scene */}
       {stage === "peel" && (
         <div className="w-full h-full bg-black">
           <PeelScene
             onComplete={() => {
               setStage("complete");
-              onComplete();
+              onComplete?.();
             }}
           />
         </div>
