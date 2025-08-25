@@ -1037,8 +1037,8 @@
 //         </div>
 //       )}
 
-//       {/* 4) Peel scene with down arrow prompt. 
-//           It calls onComplete only after the logo docks top-left, 
+//       {/* 4) Peel scene with down arrow prompt.
+//           It calls onComplete only after the logo docks top-left,
 //           then this whole preloader unmounts. */}
 //       {stage === "peel" && (
 //         <div className="w-full h-full bg-black">
@@ -1055,7 +1055,6 @@
 // };
 
 // export default PreloaderSequence;
-
 
 // PreloaderSequence.jsx
 import React, { useState, useEffect } from "react";
@@ -1084,7 +1083,7 @@ const PreloaderSequence = ({ onComplete }) => {
   const handleGlassClick = () => {
     if (clickCount === 0) {
       setGlassHintVisible(false); // hide helper text immediately
-      setClickCount(3);           // jump straight to "fully shattered" for one-click flow
+      setClickCount(3); // jump straight to "fully shattered" for one-click flow
     }
   };
 
@@ -1147,7 +1146,7 @@ const PreloaderSequence = ({ onComplete }) => {
 
       {/* 3) Logo hold */}
       {stage === "logo" && (
-        <div className="w-full h-full bg-evolve-lavender-indigo flex flex-col items-center justify-center">
+        <div className="w-full h-full bg-black flex flex-col items-center justify-center">
           <div
             className={`text-center transition-all duration-1500 ${
               textVisible ? "animate-text-reveal" : "opacity-0"

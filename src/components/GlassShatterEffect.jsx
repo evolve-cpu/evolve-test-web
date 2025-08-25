@@ -451,6 +451,271 @@
 
 // export default GlassShatterEffect;
 
+// import { useEffect, useRef, useState } from "react";
+// import gsap from "gsap";
+
+// const GlassShatterEffect = ({ clickCount, onComplete }) => {
+//   const crackRef = useRef(null);
+//   const shardRefs = useRef([]);
+//   const dustRefs = useRef([]);
+//   const [shards, setShards] = useState([]);
+//   const [dust, setDust] = useState([]);
+//   const [textShards, setTextShards] = useState([]);
+
+//   // Generate random glass shards
+//   const createShards = () => {
+//     const w = window.innerWidth;
+//     const h = window.innerHeight;
+
+//     return Array.from({ length: 200 }, (_, i) => {
+//       let size;
+//       const r = Math.random();
+//       if (r < 0.1) size = 150 + Math.random() * 300;
+//       else if (r < 0.4) size = 80 + Math.random() * 200;
+//       else size = 20 + Math.random() * 90;
+
+//       const points = Array.from(
+//         { length: 4 + Math.floor(Math.random() * 7) },
+//         () => `${Math.random() * 100}% ${Math.random() * 100}%`
+//       ).join(",");
+
+//       return {
+//         id: "g" + i,
+//         x: Math.random() * w,
+//         y: Math.random() * h,
+//         size,
+//         rotation: Math.random() * 360,
+//         clipPath: `polygon(${points})`,
+//         type: "glass"
+//       };
+//     });
+//   };
+
+//   // Break the "Click to break through" text into rectangular shards
+//   const createTextShards = () => {
+//     const centerX = window.innerWidth / 2;
+//     const centerY = window.innerHeight / 2;
+
+//     const text = "break the template";
+//     return Array.from(text).map((char, i) => ({
+//       id: "t" + i,
+//       char,
+//       x: centerX - text.length * 10 + i * 20,
+//       y: centerY,
+//       size: 120,
+//       rotation: Math.random() * 60 - 30,
+//       type: "text"
+//     }));
+//   };
+
+//   const createDust = () => {
+//     const w = window.innerWidth;
+//     const h = window.innerHeight;
+//     return Array.from({ length: 200 }, (_, i) => ({
+//       id: i,
+//       x: Math.random() * w,
+//       y: Math.random() * h,
+//       size: 2 + Math.random() * 3,
+//       opacity: 0.1 + Math.random() * 0.6
+//     }));
+//   };
+
+//   // Crack stages
+//   useEffect(() => {
+//     if (clickCount === 1) {
+//       gsap.set(crackRef.current, { opacity: 1 });
+//     }
+
+//     if (clickCount === 2) {
+//       gsap.to(crackRef.current, {
+//         opacity: 0.8,
+//         yoyo: true,
+//         repeat: 2,
+//         duration: 0.1
+//       });
+//     }
+
+//     if (clickCount === 3) {
+//       gsap.to(crackRef.current, {
+//         opacity: 0.4,
+//         duration: 0.2,
+//         onComplete: () => {
+//           setShards(createShards());
+//           setTextShards(createTextShards());
+//           setDust(createDust());
+//           gsap.to(crackRef.current, { opacity: 0, duration: 0.3 });
+//         }
+//       });
+//     }
+//   }, [clickCount]);
+
+//   // Shard + text scatter
+//   useEffect(() => {
+//     if (shards.length > 0 || textShards.length > 0) {
+//       const centerX = window.innerWidth / 2;
+//       const centerY = window.innerHeight / 2;
+
+//       const allShards = [...shards, ...textShards];
+
+//       shardRefs.current.forEach((el, i) => {
+//         if (!el || !allShards[i]) return;
+//         const dx = (allShards[i].x - centerX) * 3 + (Math.random() - 0.5) * 500;
+//         const dy = (allShards[i].y - centerY) * 3 + (Math.random() - 0.5) * 500;
+
+//         gsap.to(el, {
+//           x: dx,
+//           y: dy,
+//           rotation: "+=" + (Math.random() * 1080 - 540),
+//           opacity: 0,
+//           duration: 5 + Math.random() * 2.5,
+//           ease: "power2.out",
+//           onComplete: i === allShards.length - 1 ? onComplete : undefined
+//         });
+//       });
+//     }
+//   }, [shards, textShards, onComplete]);
+
+//   // Dust animation
+//   useEffect(() => {
+//     if (dust.length > 0) {
+//       dustRefs.current.forEach((el, i) => {
+//         if (!el) return;
+//         gsap.to(el, {
+//           x: "+=" + (Math.random() - 0.5) * 200,
+//           y: "+=" + (Math.random() * 300 + 100),
+//           opacity: 0,
+//           duration: 1 + Math.random() * 0.5,
+//           ease: "power1.out"
+//         });
+//       });
+//     }
+//   }, [dust]);
+
+//   // Mouse push-away interaction
+//   useEffect(() => {
+//     const handleMouseMove = (e) => {
+//       shardRefs.current.forEach((el) => {
+//         if (!el) return;
+//         const rect = el.getBoundingClientRect();
+//         const shardX = rect.left + rect.width / 2;
+//         const shardY = rect.top + rect.height / 2;
+
+//         const dx = shardX - e.clientX;
+//         const dy = shardY - e.clientY;
+//         const dist = Math.sqrt(dx * dx + dy * dy);
+
+//         if (dist < 150) {
+//           gsap.to(el, {
+//             x: "+=" + dx * 0.2,
+//             y: "+=" + dy * 0.2,
+//             duration: 0.3,
+//             ease: "power2.out"
+//           });
+//         }
+//       });
+//     };
+
+//     window.addEventListener("mousemove", handleMouseMove);
+//     return () => window.removeEventListener("mousemove", handleMouseMove);
+//   }, []);
+
+//   return (
+//     <div className="absolute inset-0 pointer-events-none z-10">
+//       {/* Crack image */}
+//       {/* {clickCount > 0 && clickCount < 3 && (
+//         <img
+//           ref={crackRef}
+//           src="https://res.cloudinary.com/dlfbl69bi/image/upload/v1755192265/Group_1_oihd3e.svg"
+//           alt="glass crack"
+//           className="absolute inset-0 w-full h-full object-cover z-0"
+//           style={{ opacity: 0 }}
+//         />
+//       )} */}
+//       {clickCount === 0 && (
+//         <div className="absolute inset-0 flex items-center justify-center z-20 pointer-events-none">
+//           {/* <div className="text-white text-2xl font-bold animate-pulse">
+//             click to break
+//           </div> */}
+//         </div>
+//       )}
+
+//       {/* Crack image stages */}
+//       {clickCount === 1 && (
+//         <img
+//           ref={crackRef}
+//           src="https://res.cloudinary.com/dlfbl69bi/image/upload/v1755592601/2_c36rln.svg"
+//           alt="glass crack stage 1"
+//           className="absolute inset-0 w-full h-full object-cover z-0"
+//           style={{ opacity: 0 }}
+//         />
+//       )}
+
+//       {clickCount === 2 && (
+//         <img
+//           ref={crackRef}
+//           src="https://res.cloudinary.com/dlfbl69bi/image/upload/v1755192265/Group_1_oihd3e.svg"
+//           alt="glass crack stage 2"
+//           className="absolute inset-0 w-full h-full object-cover z-0"
+//           style={{ opacity: 0 }}
+//         />
+//       )}
+
+//       {/* Glass shards + Text shards */}
+//       {clickCount === 3 &&
+//         [...shards, ...textShards].map((shard, i) => (
+//           <div
+//             key={shard.id}
+//             ref={(el) => (shardRefs.current[i] = el)}
+//             className="absolute flex items-center justify-center text-white font-bold"
+//             style={{
+//               left: shard.x,
+//               top: shard.y,
+//               width: shard.size,
+//               height: shard.size,
+//               transform: `rotate(${shard.rotation}deg)`,
+//               clipPath: shard.type === "glass" ? shard.clipPath : "none",
+//               background:
+//                 shard.type === "glass"
+//                   ? `linear-gradient(${
+//                       Math.random() * 360
+//                     }deg, rgba(255,255,255,0.4), rgba(255,255,255,0.1))`
+//                   : "transparent",
+//               fontSize: shard.type === "text" ? "28px" : "inherit",
+//               color: "white",
+//               textShadow:
+//                 shard.type === "text"
+//                   ? "0 0 10px rgba(255,255,255,0.9)"
+//                   : "none"
+//             }}
+//           >
+//             {shard.type === "text" ? shard.char : ""}
+//           </div>
+//         ))}
+
+//       {/* Dust */}
+//       {clickCount === 3 &&
+//         dust.map((d, i) => (
+//           <div
+//             key={d.id}
+//             ref={(el) => (dustRefs.current[i] = el)}
+//             className="absolute rounded-full"
+//             style={{
+//               left: d.x,
+//               top: d.y,
+//               width: d.size,
+//               height: d.size,
+//               background: "white",
+//               opacity: d.opacity,
+//               filter: "blur(1px)"
+//             }}
+//           />
+//         ))}
+//     </div>
+//   );
+// };
+
+// export default GlassShatterEffect;
+
 import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 
@@ -549,7 +814,7 @@ const GlassShatterEffect = ({ clickCount, onComplete }) => {
     }
   }, [clickCount]);
 
-  // Shard + text scatter
+  // Shard + text scatter - REDUCED DURATION HERE
   useEffect(() => {
     if (shards.length > 0 || textShards.length > 0) {
       const centerX = window.innerWidth / 2;
@@ -567,7 +832,7 @@ const GlassShatterEffect = ({ clickCount, onComplete }) => {
           y: dy,
           rotation: "+=" + (Math.random() * 1080 - 540),
           opacity: 0,
-          duration: 5 + Math.random() * 2.5,
+          duration: 3 + Math.random() * 1, // CHANGED: from 5 + Math.random() * 2.5
           ease: "power2.out",
           onComplete: i === allShards.length - 1 ? onComplete : undefined
         });
@@ -575,7 +840,7 @@ const GlassShatterEffect = ({ clickCount, onComplete }) => {
     }
   }, [shards, textShards, onComplete]);
 
-  // Dust animation
+  // Dust animation - also reduced for consistency
   useEffect(() => {
     if (dust.length > 0) {
       dustRefs.current.forEach((el, i) => {
@@ -584,7 +849,7 @@ const GlassShatterEffect = ({ clickCount, onComplete }) => {
           x: "+=" + (Math.random() - 0.5) * 200,
           y: "+=" + (Math.random() * 300 + 100),
           opacity: 0,
-          duration: 1 + Math.random() * 0.5,
+          duration: 1.2 + Math.random() * 0.5, // CHANGED: from 1 + Math.random() * 0.5
           ease: "power1.out"
         });
       });

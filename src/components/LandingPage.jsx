@@ -362,7 +362,7 @@ import FooterPage from "./sections/FooterPage.jsx";
 import SixthPage from "./sections/SixthPage.jsx";
 import SeventhPage from "./sections/SeventhPage.jsx";
 import ToolkitPage from "./sections/ToolkitPage.jsx";
-import WhyNowPage from "./sections/WhyNowPage.jsx";
+import WhyNowSection from "./sections/WhyNowSection.jsx";
 
 const LandingPage = () => {
   return (
@@ -386,6 +386,7 @@ const LandingPage = () => {
       {/* <SecondPage /> */}
       <ThirdPage />
       <FourthPage />
+      <WhyNowSection />
       <ToolkitPage />
       <FifthPage />
       <SixthPage />

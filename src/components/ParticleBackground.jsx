@@ -509,7 +509,8 @@ import React, {
   useEffect,
   useState,
   useRef,
-  useLayoutEffect
+  useLayoutEffect,
+  useCallback
 } from "react";
 import gsap from "gsap";
 
@@ -517,6 +518,7 @@ const ParticleBackground = ({ onComplete }) => {
   const containerRef = useRef(null);
   const trackRef = useRef(null);
   const tlRef = useRef(null);
+  const rafRef = useRef(null);
 
   const [mouse, setMouse] = useState({ x: null, y: null });
   const [isMobile, setIsMobile] = useState(
@@ -555,10 +557,19 @@ const ParticleBackground = ({ onComplete }) => {
   const texts = [
     "from scribbles in a notebook to\nscreens that stop you.",
     "from spark in your head to\nfire in their eyes.",
-    "from ‘that’s impossible’ to\n‘watch me!’"
+    "from 'that's impossible' to\n'watch me!'"
   ];
 
-  // slower roll + bigger gaps (measured with row-gap)
+  // Optimized mouse tracking with throttling
+  const handleMouseMove = useCallback((e) => {
+    if (rafRef.current) return; // Skip if already queued
+
+    rafRef.current = requestAnimationFrame(() => {
+      setMouse({ x: e.clientX, y: e.clientY });
+      rafRef.current = null;
+    });
+  }, []);
+
   useLayoutEffect(() => {
     if (!containerRef.current || !trackRef.current) return;
 
@@ -566,59 +577,64 @@ const ParticleBackground = ({ onComplete }) => {
     const track = trackRef.current;
 
     const ctx = gsap.context(() => {
+      // Force hardware acceleration and optimize for transforms
+      gsap.set(track, {
+        force3D: true,
+        transformOrigin: "center top"
+      });
+
       const items = gsap.utils.toArray(".credit-item");
-      const heights = items.map((el) => el.getBoundingClientRect().height);
+
+      // Cache heights to avoid repeated calculations
+      const heights = items.map((el) => {
+        const rect = el.getBoundingClientRect();
+        return rect.height;
+      });
+
       const containerH = container.getBoundingClientRect().height;
 
       // start near center (slightly low looks nicer while entering)
       const VISUAL_OFFSET = isMobile ? 14 : 18;
       const firstH = heights[0] || 0;
       const startY = containerH / 2 - firstH / 2 + VISUAL_OFFSET;
+
+      // Set initial position without triggering reflow
       gsap.set(track, { y: startY });
 
-      const PX_PER_SEC = isMobile ? 18 : 24;
-      const rowGap = parseFloat(getComputedStyle(track).rowGap || "0");
+      // Slightly faster speed for smoother perception
+      const PX_PER_SEC = isMobile ? 42 : 60;
 
-      // total stack height
-      const totalGroupH =
-        heights.reduce((a, b) => a + b, 0) +
-        rowGap * Math.max(heights.length - 1, 0);
+      // Pre-calculate all measurements
+      const containerRect = container.getBoundingClientRect();
+      const trackRect = track.getBoundingClientRect();
 
-      // push final position ABOVE true center
-      const BIAS_PCT = isMobile ? 0.2 : 0.15; // ← tweak this
-      const CENTER_BIAS = containerH * BIAS_PCT; // px above center
+      // how far the bottom of the track is from the top of the container
+      const distanceFromTopNow = trackRect.bottom - containerRect.top;
 
-      // top of stack when centered AND biased upward
-      const targetTop = (containerH - totalGroupH) / 2 - CENTER_BIAS;
+      // push it a bit more for safety so it clearly exits
+      const EXIT_PAD = isMobile ? 32 : 48;
 
-      // distance to move up from start to that biased target
-      const totalNeeded = Math.max(0, startY - targetTop);
+      // total distance to move upward (negative y)
+      const totalDistance = distanceFromTopNow + EXIT_PAD;
 
       const tl = gsap.timeline({
-        defaults: { ease: "none" },
+        defaults: {
+          ease: "none",
+          force3D: true
+        },
         onComplete: () => onComplete && onComplete()
       });
 
-      // move in steps, stop exactly at biased center
-      let moved = 0;
-      for (let i = 0; i < heights.length - 1; i++) {
-        const stepFull = heights[i] + rowGap;
-        const remaining = totalNeeded - moved;
-        if (remaining <= 0) break;
+      // Single continuous roll with optimized settings
+      tl.to(track, {
+        y: `-=${totalDistance}`,
+        duration: totalDistance / PX_PER_SEC,
+        // Use will-change and force3D for better performance
+        transformOrigin: "center top",
+        rotationZ: 0.01, // Forces 3D acceleration
+        backfaceVisibility: "hidden" // Prevents flickering
+      });
 
-        const step = Math.min(stepFull, remaining);
-        tl.to(track, { y: `-=${step}`, duration: step / PX_PER_SEC });
-        moved += step;
-
-        if (step < stepFull) break;
-      }
-
-      const leftover = totalNeeded - moved;
-      if (leftover > 0) {
-        tl.to(track, { y: `-=${leftover}`, duration: leftover / PX_PER_SEC });
-      }
-
-      tl.to({}, { duration: 0.8 }); // small hold
       tlRef.current = tl;
     }, containerRef);
 
@@ -629,15 +645,24 @@ const ParticleBackground = ({ onComplete }) => {
   }, [isMobile, onComplete]);
 
   useEffect(() => {
-    const handleMouseMove = (e) => setMouse({ x: e.clientX, y: e.clientY });
-    window.addEventListener("mousemove", handleMouseMove);
-    return () => window.removeEventListener("mousemove", handleMouseMove);
-  }, []);
+    window.addEventListener("mousemove", handleMouseMove, { passive: true });
+    return () => {
+      window.removeEventListener("mousemove", handleMouseMove);
+      if (rafRef.current) {
+        cancelAnimationFrame(rafRef.current);
+      }
+    };
+  }, [handleMouseMove]);
 
   return (
     <div
       ref={containerRef}
       className="absolute inset-0 bg-black overflow-hidden"
+      style={{
+        // Optimize container for animations
+        willChange: "auto",
+        backfaceVisibility: "hidden"
+      }}
     >
       {/* particles */}
       <div className="absolute inset-0">
@@ -672,12 +697,15 @@ const ParticleBackground = ({ onComplete }) => {
                 height: `${p.size}px`,
                 left: `${p.x}%`,
                 top: `${p.y}%`,
-                transform: `translate(${translateX}px, ${translateY}px)`,
+                transform: `translate3d(${translateX}px, ${translateY}px, 0)`,
                 animation: `
                   drift ${p.animationDuration}s ease-in-out infinite,
                   twinkle ${particleConfig.twinkleDuration}s ease-in-out infinite`,
                 animationDelay: `${p.animationDelay}s, ${p.twinkleDelay}s`,
-                boxShadow: "0 0 6px rgba(180,120,255,0.9)"
+                boxShadow: "0 0 6px rgba(180,120,255,0.9)",
+                // Performance optimizations
+                willChange: "transform",
+                backfaceVisibility: "hidden"
               }}
             />
           );
@@ -688,15 +716,36 @@ const ParticleBackground = ({ onComplete }) => {
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden">
         <div
           ref={trackRef}
-          className="flex flex-col items-center will-change-transform"
+          className="flex flex-col items-center"
           style={{
-            rowGap: isMobile ? 48 : 64 // bigger gaps here (px)
+            rowGap: isMobile ? 48 : 64,
+            // Critical performance optimizations for smooth animation
+            willChange: "transform",
+            backfaceVisibility: "hidden",
+            perspective: 1000,
+            transformStyle: "preserve-3d"
           }}
         >
           {texts.map((t, i) => (
-            <div key={i} className="credit-item">
+            <div
+              key={i}
+              className="credit-item"
+              style={{
+                // Optimize each credit item
+                willChange: "auto",
+                backfaceVisibility: "hidden"
+              }}
+            >
               <div className="text-center whitespace-pre-line px-4 text-evolve-inchworm font-bricolage">
-                <div className="text-2xl md:text-6xl font-extrabold leading-snug lowercase">
+                <div
+                  className="text-2xl md:text-6xl font-extrabold leading-snug lowercase"
+                  style={{
+                    // Text rendering optimization
+                    textRendering: "geometricPrecision",
+                    fontSmooth: "always",
+                    WebkitFontSmoothing: "antialiased"
+                  }}
+                >
                   {t}
                 </div>
               </div>
@@ -708,24 +757,24 @@ const ParticleBackground = ({ onComplete }) => {
       <style jsx>{`
         @keyframes drift {
           0% {
-            transform: translate(0, 0) scale(1);
+            transform: translate3d(0, 0, 0) scale(1);
           }
           50% {
-            transform: translate(-12px, 10px) scale(1.1);
+            transform: translate3d(-12px, 10px, 0) scale(1.1);
           }
           100% {
-            transform: translate(0, 0) scale(1);
+            transform: translate3d(0, 0, 0) scale(1);
           }
         }
         @keyframes twinkle {
           0%,
           100% {
             opacity: 0.7;
-            transform: scale(1);
+            transform: scale3d(1, 1, 1);
           }
           50% {
             opacity: 1;
-            transform: scale(1.6);
+            transform: scale3d(1.6, 1.6, 1);
           }
         }
       `}</style>
