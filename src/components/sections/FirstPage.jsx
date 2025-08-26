@@ -996,13 +996,65 @@ const FirstPage = () => {
   }, [dots]);
 
   // TEXT TIMELINE (single pin, long end)
+  // useLayoutEffect(() => {
+  //   const ctx = gsap.context(() => {
+  //     const q = gsap.utils.selector(containerRef);
+
+  //     // visibility
+  //     gsap.set(q("#g1"), { autoAlpha: 1 });
+  //     gsap.set([q("#g2"), q("#g3")], { autoAlpha: 0 });
+
+  //     // intro pop (no scroll needed)
+  //     gsap.from([q("#t1"), q("#t2"), q("#t3")], {
+  //       y: 28,
+  //       autoAlpha: 0,
+  //       duration: 0.6,
+  //       stagger: 0.14,
+  //       ease: "power2.out"
+  //     });
+
+  //     // single ScrollTrigger that keeps this page pinned
+  //     const tl = gsap.timeline({
+  //       defaults: { ease: "power2.out" },
+  //       scrollTrigger: {
+  //         trigger: containerRef.current,
+  //         start: "top top",
+  //         end: `+=${TEXT_SCROLL_SPAN}`, // <- long pin so next page doesn't appear yet
+  //         scrub: true,
+  //         pin: true,
+  //         pinSpacing: true, // <- spacer keeps next section from sliding up
+  //         anticipatePin: 1
+  //       }
+  //     });
+
+  //     // segment A (first scroll chunk): t3 -> t4 (same spot)
+  //     tl.to(q("#t3"), { autoAlpha: 0, y: -14, duration: 0.5 }, "+=0.25").to(
+  //       q("#g2"),
+  //       { autoAlpha: 1, duration: 0.6 },
+  //       "<"
+  //     );
+
+  //     // segment B (second scroll chunk): hide g1+g2, show g3 centered
+  //     tl.to([q("#g1"), q("#g2")], { autoAlpha: 0, duration: 0.6 }, "+=0.6").to(
+  //       q("#g3"),
+  //       { autoAlpha: 1, duration: 0.9 },
+  //       "<"
+  //     );
+  //   }, containerRef);
+
+  //   return () => ctx.revert();
+  // }, []);
+
+  // TEXT TIMELINE (single pin, long end)
   useLayoutEffect(() => {
     const ctx = gsap.context(() => {
       const q = gsap.utils.selector(containerRef);
 
-      // visibility
+      // visibility - set initial states more explicitly
       gsap.set(q("#g1"), { autoAlpha: 1 });
       gsap.set([q("#g2"), q("#g3")], { autoAlpha: 0 });
+      // Explicitly set t3 initial state
+      gsap.set(q("#t3"), { autoAlpha: 1, y: 0 });
 
       // intro pop (no scroll needed)
       gsap.from([q("#t1"), q("#t2"), q("#t3")], {
@@ -1019,20 +1071,24 @@ const FirstPage = () => {
         scrollTrigger: {
           trigger: containerRef.current,
           start: "top top",
-          end: `+=${TEXT_SCROLL_SPAN}`, // <- long pin so next page doesn't appear yet
+          end: `+=${TEXT_SCROLL_SPAN}`,
           scrub: true,
           pin: true,
-          pinSpacing: true, // <- spacer keeps next section from sliding up
-          anticipatePin: 1
+          pinSpacing: true,
+          anticipatePin: 1,
+          // Add refresh on resize to recalculate positions
+          invalidateOnRefresh: true
         }
       });
 
       // segment A (first scroll chunk): t3 -> t4 (same spot)
-      tl.to(q("#t3"), { autoAlpha: 0, y: -14, duration: 0.5 }, "+=0.25").to(
-        q("#g2"),
-        { autoAlpha: 1, duration: 0.6 },
-        "<"
-      );
+      // Add explicit from state for t3 to ensure proper reverse animation
+      tl.fromTo(
+        q("#t3"),
+        { autoAlpha: 1, y: 0 }, // from state
+        { autoAlpha: 0, y: -14, duration: 0.5 },
+        "+=0.25"
+      ).to(q("#g2"), { autoAlpha: 1, duration: 0.6 }, "<");
 
       // segment B (second scroll chunk): hide g1+g2, show g3 centered
       tl.to([q("#g1"), q("#g2")], { autoAlpha: 0, duration: 0.6 }, "+=0.6").to(

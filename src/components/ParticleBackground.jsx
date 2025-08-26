@@ -602,7 +602,7 @@ const ParticleBackground = ({ onComplete }) => {
       gsap.set(track, { y: startY });
 
       // Slightly faster speed for smoother perception
-      const PX_PER_SEC = isMobile ? 42 : 60;
+      const PX_PER_SEC = isMobile ? 50 : 60;
 
       // Pre-calculate all measurements
       const containerRect = container.getBoundingClientRect();
