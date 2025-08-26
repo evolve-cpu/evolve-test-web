@@ -888,7 +888,8 @@ const SixthPage = () => {
     >
       <div ref={pinRef} className="relative min-h-screen w-full">
         {/* main content wrapper */}
-        <div className="relative w-full h-screen max-w-[1400px] mx-auto px-6 md:px-0 pt-20 md:pt-20 flex flex-col md:flex-row justify-between items-start md:pb-10 pb-10">
+        {/* <div className="relative w-full h-screen max-w-[1400px] mx-auto px-6 md:px-0 pt-20 md:pt-20 flex flex-col md:flex-row justify-between items-start md:pb-10 pb-10"> */}
+        <div className="relative w-full h-screen max-w-[1400px] mx-auto px-6 md:px-12 pt-20 md:pt-20 flex flex-col md:flex-row justify-between items-start md:pb-10 pb-10">
           {/* left column */}
           <div className="relative z-20 w-full md:w-1/2 flex flex-col">
             <h1 className="font-extrabold text-4xl md:text-7xl mb-8 md:mb-[15rem]">
@@ -913,7 +914,12 @@ const SixthPage = () => {
 
           {/* right column with fixed-size wrapper so image position never shifts */}
           <div className="relative z-10 w-full md:w-1/2 flex justify-center md:justify-end items-start mt-10 md:mt-[1rem]">
-            <div className="relative w-full max-w-[640px] md:max-w-[560px] lg:max-w-[640px] aspect-[3/4] min-h-[300px]">
+            {/* <div className="relative w-full max-w-[640px] md:max-w-[560px] lg:max-w-[640px] aspect-[3/4] min-h-[300px]"> */}
+            <div
+              className={`relative w-full max-w-[640px] md:max-w-[560px] lg:max-w-[640px] aspect-[3/4] min-h-[300px]
+    ${phaseIndex === 3 ? "md:-mt-24 -mt-16" : ""} 
+    ${phaseIndex === 4 ? "md:-mt-28 -mt-24" : ""}`}
+            >
               {/* bottom image (current) */}
               <img
                 ref={imageBottomRef}
