@@ -1210,7 +1210,7 @@ const FirstPage = () => {
             </p>
             <p
               id="t3"
-              className="font-bricolage text-evolve-inchworm text-lg sm:text-xl md:text-2xl mt-5 lowercase"
+              className="font-bricolage font-bold text-evolve-inchworm text-lg sm:text-xl md:text-2xl mt-5 lowercase"
             >
               it's how cities breathe, brands speak, revolutions succeed, and
               ideas move...

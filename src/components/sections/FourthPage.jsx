@@ -272,8 +272,8 @@ const FourthPage = () => {
       "We are a playground, a dojo, a launchpad.",
       "Guided by designers who know how to turn blank into bold.",
       "Here, you will find mentors, misfits, and midnight breakthroughs.",
-      "It’s where the work makes the world pause",
-      "The kind of thinking that travels with you, even if you never touch Figma again."
+      "the kind of work that earns double-takes.",
+      "and the ideas stay with you long after you’ve walked away."
       //   "And this is the last one."
     ],
     []

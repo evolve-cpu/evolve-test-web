@@ -869,7 +869,13 @@ function pxToWorld(px, axisWorld, axisPx) {
 
 // 3D logo plane
 const PeelPage = forwardRef(function PeelPage(
-  { onReady, onDocked, navWidthPx = 140, marginPx = { x: 20, y: 16 } },
+  {
+    onReady,
+    onDocked,
+    onSubtextCue,
+    navWidthPx = 140,
+    marginPx = { x: 20, y: 16 }
+  },
   ref
 ) {
   const groupRef = useRef();
@@ -929,8 +935,10 @@ const PeelPage = forwardRef(function PeelPage(
         planeRef.current.material,
         { opacity: 1, duration: 0.3, ease: "power1.out" },
         "<0.15"
-      );
-  }, [camera, size, planeSize, isMobile, onReady]);
+      )
+      // cue subtext slightly before intro ends
+      .call(() => onSubtextCue?.(), [], "-=0.2");
+  }, [camera, size, planeSize, isMobile, onReady, onSubtextCue]);
 
   useImperativeHandle(ref, () => ({
     dockToNavbar() {
@@ -1016,12 +1024,28 @@ export default function PeelScene({ onComplete }) {
     return () => window.removeEventListener("resize", onR);
   }, []);
 
-  // after intro is ready, reveal arrow after ~4s
+  // subtext starts hidden
+  useLayoutEffect(() => {
+    if (!remarkRef.current) return;
+    gsap.set(remarkRef.current, { autoAlpha: 0, y: 6 });
+  }, []);
+
+  // show arrow immediately after intro completes (which is just after subtext cue)
   useEffect(() => {
     if (!ready) return;
-    const t = setTimeout(() => setArrowEnabled(true), 4000);
-    return () => clearTimeout(t);
+    setArrowEnabled(true);
   }, [ready]);
+
+  // subtext cue handler from the logo intro
+  const handleSubtextCue = () => {
+    const el = remarkRef.current;
+    if (!el) return;
+    gsap.fromTo(
+      el,
+      { autoAlpha: 0, y: 6 },
+      { autoAlpha: 1, y: 0, duration: 0.35, ease: "power2.out" }
+    );
+  };
 
   useEffect(() => {
     if (!ready || docked) return;
@@ -1114,29 +1138,16 @@ export default function PeelScene({ onComplete }) {
           ref={logoRef}
           onReady={() => setReady(true)}
           onDocked={() => {}}
+          onSubtextCue={handleSubtextCue}
           navWidthPx={isMobile ? 110 : 140}
           marginPx={{ x: 20, y: 18 }}
         />
       </Canvas>
 
-      {/* centered overlay for "be remarkable." */}
-      {/* {!docked && (
-        <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center text-center">
-          <div
-            ref={remarkRef}
-            className="mt-4 text-2xl md:text-4xl font-bold text-white"
-            style={{ filter: "drop-shadow(0 2px 6px rgba(0,0,0,0.35))" }}
-          >
-            be remarkable.
-          </div>
-        </div>
-      )} */}
-
-      {/* centered overlay for "be remarkable." — placed *below* the logo */}
+      {/* centered overlay for "be remarkable." — placed below the logo */}
       {!docked && (
         <div
           className="pointer-events-none absolute left-1/2 -translate-x-1/2 text-center z-20"
-          // push it slightly below the canvas center; tweak these numbers if needed
           style={{
             top: `calc(50% + ${isMobile ? 40 : 60}px)`
           }}
@@ -1151,7 +1162,7 @@ export default function PeelScene({ onComplete }) {
         </div>
       )}
 
-      {/* scroll arrow overlay, appears ~4s after ready */}
+      {/* scroll arrow overlay */}
       {ready && !docked && arrowEnabled && (
         <button
           ref={arrowRef}
@@ -1184,8 +1195,8 @@ export default function PeelScene({ onComplete }) {
       <style jsx>{`
         .scroll-arrow {
           opacity: 0;
-          animation: arrowFadeIn 0.5s ease forwards 0.2s,
-            arrowBounce 1.2s ease-in-out infinite 0.7s;
+          animation: arrowFadeIn 0.5s ease forwards,
+            arrowBounce 1.2s ease-in-out infinite;
         }
         @keyframes arrowFadeIn {
           from {
