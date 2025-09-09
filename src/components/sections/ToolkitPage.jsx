@@ -373,20 +373,17 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger);
 
-// first section tuning (your original)
 const SCROLL_SPAN_PX = 2400;
 const REVEAL_DUR = 0.6;
 const HIDE_DUR = 0.45;
 const HOLD_BEAT = 0.25;
 
-// second section tuning (new)
 const AFTER_SCROLL_SPAN_PX = 1400;
 const AFTER_REVEAL_DUR = 0.6;
 const AFTER_HIDE_DUR = 0.45;
 const AFTER_HOLD_BEAT = 0.25;
 
 const ToolkitPage = () => {
-  // ===== FIRST SECTION (your original) =====
   const pinRef1 = useRef(null);
 
   const items = useMemo(
@@ -394,7 +391,7 @@ const ToolkitPage = () => {
       {
         subheading: "community",
         subtext:
-          "connect with fellow creators. share work, \nget feedback, grow together."
+          "connect with fellow creators. share work,\nget feedback, grow together."
       },
       {
         subheading: "webinars",
@@ -402,12 +399,8 @@ const ToolkitPage = () => {
       },
       {
         subheading: "quiz",
-        subtext: "quick challenges that help you \nsee how remarkable you are."
+        subtext: "quick challenges that help you\nsee how remarkable you are."
       }
-      // {
-      //   subheading: "course",
-      //   subtext: "trimester-based, hands-on, \nwith a paid internship pathway."
-      // }
     ],
     []
   );
@@ -419,7 +412,6 @@ const ToolkitPage = () => {
       const selectors = items.map((_, i) => `#tk-item-${i}`);
       const els = selectors.map((sel) => document.querySelector(sel));
 
-      // initial state + gpu/compositing hints
       gsap.set(els, {
         autoAlpha: 0,
         yPercent: 6,
@@ -429,12 +421,12 @@ const ToolkitPage = () => {
       if (els[0]) gsap.set(els[0], { autoAlpha: 1, yPercent: 0 });
 
       const tl = gsap.timeline({
-        defaults: { ease: "none" }, // smoother with scrub
+        defaults: { ease: "none" },
         scrollTrigger: {
           trigger: pinRef1.current,
           start: "top top",
           end: `+=${SCROLL_SPAN_PX}`,
-          scrub: 0.35, // slight smoothing
+          scrub: 0.35,
           pin: true,
           pinSpacing: true,
           pinReparent: true,
@@ -458,7 +450,6 @@ const ToolkitPage = () => {
     return () => ctx.revert();
   }, [items]);
 
-  // ===== SECOND SECTION (new: interstitial + course block) =====
   const pinRef2 = useRef(null);
   const interstitialRef = useRef(null);
   const heading2Ref = useRef(null);
@@ -472,7 +463,6 @@ const ToolkitPage = () => {
       const heading = heading2Ref.current;
       const courseWrap = courseWrapRef.current;
 
-      // initial states
       gsap.set(interstitial, {
         autoAlpha: 1,
         yPercent: 0,
@@ -486,7 +476,6 @@ const ToolkitPage = () => {
         force3D: true
       });
 
-      // timeline
       const tl = gsap.timeline({
         defaults: { ease: "none" },
         scrollTrigger: {
@@ -503,17 +492,14 @@ const ToolkitPage = () => {
         }
       });
 
-      // hold interstitial
       tl.to({}, { duration: AFTER_HOLD_BEAT });
 
-      // hide interstitial
       tl.to(interstitial, {
         autoAlpha: 0,
         yPercent: -6,
         duration: AFTER_HIDE_DUR
       });
 
-      // reveal heading + course block
       tl.to(
         heading,
         { autoAlpha: 1, y: 0, duration: AFTER_REVEAL_DUR },
@@ -530,23 +516,31 @@ const ToolkitPage = () => {
 
   return (
     <>
-      {/* ===== SECTION 1: your original pinned swap ===== */}
+      {/* ===== SECTION 1 ===== */}
       <section className="bg-black text-white font-bricolage lowercase">
-        <div ref={pinRef1} className="relative min-h-screen w-full">
-          <div className="relative w-full h-screen max-w-[1100px] mx-auto">
-            {/* heading near top */}
-            <div className="px-6 md:px-8 pt-20 md:pt-24">
-              <h1 className="font-extrabold text-4xl md:text-7xl leading-tight">
+        <div
+          ref={pinRef1}
+          className="relative min-h-[90vh] md:min-h-screen w-full"
+        >
+          <div className="relative w-full h-screen max-w-screen-xl xl:max-w-[1300px] mx-auto px-4 lg:px-8">
+            {/* heading */}
+            <div className="pt-12 sm:pt-20 md:pt-24 lgmax:pt-16">
+              <h1
+                className="font-extrabold 
+                text-[clamp(1.75rem,5vw,4rem)] 
+                lgmax:text-[clamp(1.5rem,4.5vw,3.5rem)] 
+                leading-tight"
+              >
                 the evolve
                 <br />
                 toolkit
               </h1>
             </div>
 
-            {/* swap slot anchored near bottom */}
-            <div className="absolute inset-x-0 bottom-6 px-6 md:px-8">
+            {/* bottom text */}
+            <div className="absolute inset-x-0 bottom-3 sm:bottom-6 lgmax:bottom-4 px-3 sm:px-8 max-h-[40vh] overflow-hidden">
               <div className="relative w-full max-w-3xl">
-                <div className="relative min-h-[160px] md:min-h-[200px]">
+                <div className="relative min-h-[140px] sm:min-h-[180px] md:min-h-[200px]">
                   {items.map((it, i) => (
                     <div
                       key={it.subheading}
@@ -554,10 +548,17 @@ const ToolkitPage = () => {
                       className="absolute inset-0 transform-gpu will-change-transform"
                       style={{ pointerEvents: "none" }}
                     >
-                      <h2 className="text-evolve-inchworm font-extrabold text-3xl md:text-5xl mb-3">
+                      <h2
+                        className="text-evolve-inchworm font-extrabold 
+                        text-xl sm:text-3xl md:text-5xl lgmax:text-2xl mb-2 sm:mb-3"
+                      >
                         {it.subheading}
                       </h2>
-                      <p className="text-evolve-inchworm font-medium text-base md:text-2xl leading-snug whitespace-pre-line">
+                      <p
+                        className="text-evolve-inchworm font-medium 
+                        text-xs sm:text-base md:text-2xl lgmax:text-sm 
+                        leading-snug whitespace-pre-line"
+                      >
                         {it.subtext}
                       </p>
                     </div>
@@ -569,48 +570,71 @@ const ToolkitPage = () => {
         </div>
       </section>
 
-      {/* ===== SECTION 2: interstitial, then course block ===== */}
+      {/* ===== SECTION 2 ===== */}
       <section className="bg-black text-white font-bricolage lowercase">
-        <div ref={pinRef2} className="relative min-h-screen w-full">
-          <div className="relative w-full h-screen max-w-[1100px] mx-auto">
-            {/* interstitial — centered */}
+        <div
+          ref={pinRef2}
+          className="relative min-h-[90vh] md:min-h-screen w-full"
+        >
+          <div className="relative w-full h-screen max-w-screen-xl xl:max-w-[1300px] mx-auto px-4 lg:px-8">
+            {/* interstitial */}
             <div
               ref={interstitialRef}
-              className="absolute inset-0 flex items-center justify-center px-6 md:px-8 text-center"
+              className="absolute inset-0 flex items-center justify-center px-4 sm:px-8 text-center"
               style={{ zIndex: 2, pointerEvents: "none" }}
             >
-              <h2 className="font-extrabold text-3xl md:text-6xl leading-tight">
+              <h2
+                className="font-extrabold 
+                text-[clamp(1.5rem,4.5vw,3.5rem)] 
+                lgmax:text-[clamp(1.25rem,4vw,3rem)] 
+                leading-tight"
+              >
                 when you’re ready to go all in...
               </h2>
             </div>
 
-            {/* heading + course copy */}
-            {/* heading + course copy */}
-            <div className="px-6 md:px-8 h-full flex items-center md:block md:h-auto md:pt-24">
+            {/* heading + course content */}
+            <div className="h-full flex items-center md:block md:h-auto md:pt-24 lgmax:pt-16">
               <div className="w-full">
                 <h1
                   ref={heading2Ref}
-                  className="font-extrabold text-4xl md:text-7xl leading-tight"
+                  className="font-extrabold 
+                  text-[clamp(2rem,6vw,4.5rem)] 
+                  lgmax:text-[clamp(1.75rem,5vw,4rem)] 
+                  leading-tight"
                 >
                   the evolve
                   <br />
                   toolkit
                 </h1>
-                {/* keep your spacing updates */}
-                <div ref={courseWrapRef} className="mt-10 md:mt-12 max-w-2xl">
-                  <h2 className="text-evolve-inchworm font-extrabold text-3xl md:text-5xl">
+                <div
+                  ref={courseWrapRef}
+                  className="mt-6 sm:mt-10 md:mt-12 lgmax:mt-8 max-w-2xl"
+                >
+                  <h2
+                    className="text-evolve-inchworm font-extrabold 
+                    text-xl sm:text-3xl md:text-5xl lgmax:text-2xl"
+                  >
                     course
                   </h2>
-                  <p className="text-evolve-inchworm font-medium text-base md:text-2xl leading-snug mt-4 md:mt-5">
+                  <p
+                    className="text-evolve-inchworm font-medium 
+                    text-xs sm:text-base md:text-2xl lgmax:text-sm 
+                    leading-snug mt-2 sm:mt-4 md:mt-5"
+                  >
                     the toolkit gets you started.
                     <br /> the course is where it gets serious:
                   </p>
-                  <p className="text-white font-extrabold text-base md:text-2xl leading-snug mt-8 md:mt-10">
+                  <p
+                    className="text-white font-extrabold 
+                    text-xs sm:text-base md:text-2xl lgmax:text-sm 
+                    leading-snug mt-4 sm:mt-8 md:mt-10"
+                  >
                     three levels, no shortcuts, mentors
                     <br /> who push your limits, and a paid
                     <br /> internship that proves you belong.
                   </p>
-                </div>{" "}
+                </div>
               </div>
             </div>
           </div>

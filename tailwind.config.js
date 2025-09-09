@@ -3,6 +3,9 @@ export default {
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
     extend: {
+      screens: {
+        lgmax: { max: "1279px", min: "1024px" } // smaller laptops only
+      },
       animation: {
         "infinite-vertical": "infiniteScroll 10s linear infinite",
         "infinite-horizontal": "infiniteScroll 5s linear infinite",
@@ -11,12 +14,12 @@ export default {
         "text-reveal": "textReveal 1.5s ease-out forwards",
         "glass-shatter": "glassShatter 0.8s ease-out forwards",
         "page-peel": "pagePeel 2s ease-in-out forwards",
-        "logo-shine": "logoShine 3s ease-in-out infinite",
+        "logo-shine": "logoShine 3s ease-in-out infinite"
       },
       fontFamily: {
         bricolage: "Bricolage Grotesque, sans-serif",
         rg: "Random Grotesque",
-        montserrat: "'Montserrat', sans-serif",
+        montserrat: "'Montserrat', sans-serif"
       },
       backgroundColor: {
         "input-field": "rgba(45, 45, 46,1)",
@@ -33,7 +36,7 @@ export default {
         "raisin-black": "rgba(35, 35, 37, 1)",
         cinnabar: "rgba(231, 68, 42, 1)",
         heliotrope: "rgba(212, 122, 249, 1)",
-        "chinese-gold": "rgba(195, 162, 0, 1)",
+        "chinese-gold": "rgba(195, 162, 0, 1)"
       },
       backgroundImage: {
         "false-button": "url('/src/assets/icons/falseButton.svg')",
@@ -94,10 +97,11 @@ export default {
           "url('/src/assets/images/interfaces-course/chapter3/module2/endless_menu.png')",
         "tiny-order":
           "url('/src/assets/images/interfaces-course/chapter3/module2/tiny_order.jpeg')",
-        "purple-gradient": "radial-gradient(circle at center, #d47af9 0%, #a35bfb 50%, #8b4cf7 100%)",
+        "purple-gradient":
+          "radial-gradient(circle at center, #d47af9 0%, #a35bfb 50%, #8b4cf7 100%)"
       },
       backgroundSize: {
-        full: "100% 100%",
+        full: "100% 100%"
       },
       boxShadow: {
         "button-bottom-right": "-4px -4px 0px 0px rgba(0, 0, 0, 0.25) inset",
@@ -115,7 +119,7 @@ export default {
         "top-left-small": "4px 4px 0px 0px rgba(0, 0, 0, 0.25) inset",
         button: "0px 4px 0px 0px rgba(0, 0, 0, 0.25) inset",
         full: "0px 0px 0px 0px rgba(0, 0, 0, 0.25) inset",
-        webinars: "0px 5px 0px 0px rgba(255, 255, 255, 1)",
+        webinars: "0px 5px 0px 0px rgba(255, 255, 255, 1)"
       },
       borderRadius: {
         modal: "1.25rem",
@@ -123,12 +127,12 @@ export default {
         "10px": "0.625rem",
         "18px": "1.125rem",
         "20px": "1.25rem",
-        "25px": "1.563rem",
+        "25px": "1.563rem"
       },
       borderWidth: {
         "10px": "0.625rem",
         "20px": "1.25rem",
-        "40px": "2.5rem",
+        "40px": "2.5rem"
       },
       colors: {
         "evolve-arsenic": "rgba(66, 61, 68, 1)",
@@ -150,10 +154,10 @@ export default {
         "evolve-white-01": "rgba(244, 244, 244, 0.1)",
         "evolve-white": "rgba(244, 244, 244, 1)",
         "evolve-willpower-orange": "rgba(247, 86, 2, 1)",
-        "evolve-yellow": "rgba(255, 208, 7, 1)",
+        "evolve-yellow": "rgba(255, 208, 7, 1)"
       },
       content: {
-        "empty-string": "''",
+        "empty-string": "''"
       },
       dropShadow: {
         "complete-tick": "5px 6px 0px 0px rgba(0, 0, 0, 0.25)",
@@ -162,11 +166,11 @@ export default {
         "true-button": "0px 9px 0px rgba(163, 91, 251, 1)",
         button: "-3px 9px 0px rgba(163, 91, 251, 1)",
         challenges: "0px 5px 0px rgb(255, 154, 12)",
-        webinars: "0px 5px 0px 0px rgba(255, 255, 255, 1)",
+        webinars: "0px 5px 0px 0px rgba(255, 255, 255, 1)"
       },
       cursor: {
         tech: "url('/src/assets/images/arrow_pointer.svg'), default",
-        soft: "url('/src/assets/images/butterfly_pointer.svg'), default",
+        soft: "url('/src/assets/images/butterfly_pointer.svg'), default"
       },
       fontSize: {
         "22px": "1.375rem",
@@ -178,7 +182,7 @@ export default {
         "64px": "4rem",
         "80px": "5rem",
         question: "5rem",
-        title: "9.375rem",
+        title: "9.375rem"
       },
       flex: {
         1: "1 1 0%",
@@ -192,48 +196,51 @@ export default {
         9: "9 9 0%",
         10: "10 10 0%",
         11: "11 11 0%",
-        12: "12 12 0%",
+        12: "12 12 0%"
       },
       height: {
         "416px": "26rem",
         "75px": "4.688rem",
-        navigation: "calc(100vh - 6rem)",
+        navigation: "calc(100vh - 6rem)"
       },
       inset: {
         15: "3.75rem",
-        "quiz-button": "10%",
+        "quiz-button": "10%"
       },
       letterSpacing: {
         "-2%": "-0.02em",
-        "-4%": "-0.04em",
+        "-4%": "-0.04em"
       },
       keyframes: {
         infiniteScroll: {
           from: { transform: "translateX(-10%)" },
-          to: { transform: "translateX(-110%)" },
+          to: { transform: "translateX(-110%)" }
         },
         particleFloat: {
-          "0%, 100%": { transform: "translateY(0px) rotate(0deg)", opacity: "0.7" },
-          "50%": { transform: "translateY(-20px) rotate(180deg)", opacity: "1" },
+          "0%, 100%": {
+            transform: "translateY(0px) rotate(0deg)",
+            opacity: "0.7"
+          },
+          "50%": { transform: "translateY(-20px) rotate(180deg)", opacity: "1" }
         },
         particleGlow: {
           "0%, 100%": { boxShadow: "0 0 20px rgba(163, 91, 251, 0.5)" },
-          "50%": { boxShadow: "0 0 40px rgba(212, 122, 249, 0.8)" },
+          "50%": { boxShadow: "0 0 40px rgba(212, 122, 249, 0.8)" }
         },
         textReveal: {
-          "0%": { 
-            opacity: "0", 
+          "0%": {
+            opacity: "0",
             transform: "translateY(50px) scale(0.8)",
             filter: "blur(10px)"
           },
-          "100%": { 
-            opacity: "1", 
+          "100%": {
+            opacity: "1",
             transform: "translateY(0px) scale(1)",
             filter: "blur(0px)"
-          },
+          }
         },
         glassShatter: {
-          "0%": { 
+          "0%": {
             opacity: "1",
             transform: "scale(1)",
             filter: "brightness(1)"
@@ -241,14 +248,14 @@ export default {
           "50%": {
             filter: "brightness(2) contrast(2)"
           },
-          "100%": { 
+          "100%": {
             opacity: "0",
             transform: "scale(1.2)",
             filter: "brightness(0) blur(20px)"
-          },
+          }
         },
         pagePeel: {
-          "0%": { 
+          "0%": {
             clipPath: "polygon(0 0, 100% 0, 100% 100%, 0 100%)",
             transform: "rotateY(0deg)"
           },
@@ -256,21 +263,22 @@ export default {
             clipPath: "polygon(0 0, 90% 0, 80% 100%, 0 100%)",
             transform: "rotateY(-15deg)"
           },
-          "100%": { 
+          "100%": {
             clipPath: "polygon(0 0, 0 0, 0 100%, 0 100%)",
             transform: "rotateY(-90deg)"
-          },
+          }
         },
         logoShine: {
-          "0%, 100%": { 
+          "0%, 100%": {
             textShadow: "0 0 20px rgba(163, 91, 251, 0.5)",
             transform: "scale(1)"
           },
-          "50%": { 
-            textShadow: "0 0 40px rgba(212, 122, 249, 0.8), 0 0 60px rgba(163, 91, 251, 0.6)",
+          "50%": {
+            textShadow:
+              "0 0 40px rgba(212, 122, 249, 0.8), 0 0 60px rgba(163, 91, 251, 0.6)",
             transform: "scale(1.05)"
-          },
-        },
+          }
+        }
       },
       lineHeight: {
         0.1: "0.1",
@@ -286,41 +294,41 @@ export default {
         1.1: "1.1",
         1.2: "1.2",
         12: "3rem",
-        16: "4rem",
+        16: "4rem"
       },
       margin: {
         "6px": "0.375rem",
         "276px": "17.25rem",
-        "300px": "18.75rem",
+        "300px": "18.75rem"
       },
       maxHeight: {
         "472px": "29.5rem",
         "60px": "3.75rem",
         "chapter-intro": "calc(100vh - 12rem)",
         modal: "75vh",
-        navigation: "70vh",
+        navigation: "70vh"
       },
       maxWidth: {
         "1/3": "33.333333%",
         "2/3": "66.666667%",
         "100px": "6.25rem",
         "60px": "3.75rem",
-        "296px": "18.5rem",
+        "296px": "18.5rem"
       },
       minHeight: {
-        modal: "25vh",
+        modal: "25vh"
       },
       minWidth: {
         button: "12.5rem",
-        modal: "25vw",
+        modal: "25vw"
       },
       padding: {
         "10px": "0.625rem",
-        "18px": "1.125rem",
+        "18px": "1.125rem"
       },
       width: {
         hr: "1px",
-        "296px": "18.5rem",
+        "296px": "18.5rem"
       },
       zIndex: {
         1: "1",
@@ -337,16 +345,16 @@ export default {
         12: "12",
         13: "13",
         14: "14",
-        15: "15",
+        15: "15"
       },
       top: {
-        17: "4.375rem",
+        17: "4.375rem"
       },
       gridTemplateColumns: {
         "100%": "repeat(2, 100%)",
-        "chapter-navigation": "16rem 16rem",
-      },
-    },
+        "chapter-navigation": "16rem 16rem"
+      }
+    }
   },
-  plugins: [],
+  plugins: []
 };

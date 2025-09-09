@@ -886,41 +886,37 @@ const SixthPage = () => {
       ref={rootRef}
       className="bg-black text-white font-bricolage lowercase"
     >
-      <div ref={pinRef} className="relative min-h-screen w-full">
-        {/* main content wrapper */}
-        {/* <div className="relative w-full h-screen max-w-[1400px] mx-auto px-6 md:px-0 pt-20 md:pt-20 flex flex-col md:flex-row justify-between items-start md:pb-10 pb-10"> */}
-        <div className="relative w-full h-screen max-w-[1400px] mx-auto px-6 md:px-12 pt-20 md:pt-20 flex flex-col md:flex-row justify-between items-start md:pb-10 pb-10">
-          {/* left column */}
+      <div ref={pinRef} className="relative min-h-[90vh] w-full">
+        <div className="relative w-full min-h-[90vh] max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-12 pt-16 sm:pt-20 flex flex-col md:flex-row justify-between items-start md:pb-10 pb-10">
+          {/* Left Column */}
           <div className="relative z-20 w-full md:w-1/2 flex flex-col">
-            <h1 className="font-extrabold text-4xl md:text-7xl mb-8 md:mb-[15rem]">
-              how you <br />
-              will evolve
+            <h1 className="font-extrabold text-[clamp(2rem,4vw,4.5rem)] mb-8 sm:mb-16 lg:mb-32 leading-tight">
+              how you <br /> will evolve
             </h1>
 
-            {/* phase text */}
+            {/* Phase Text */}
             <div
               ref={textWrapRef}
               className="max-w-md md:max-w-lg transform-gpu will-change-transform"
             >
-              <h2 className="text-evolve-inchworm font-extrabold text-3xl md:text-5xl mb-2 md:text-left">
+              <h2 className="text-evolve-inchworm font-extrabold text-[clamp(1.5rem,3vw,3rem)] mb-2 md:text-left">
                 {phases[phaseIndex].heading}
               </h2>
               <p
-                className="text-evolve-inchworm font-medium text-sm md:text-2xl leading-snug md:leading-relaxed md:text-left"
+                className="text-evolve-inchworm font-medium text-[clamp(0.875rem,1.5vw,1.5rem)] leading-snug md:leading-relaxed md:text-left"
                 dangerouslySetInnerHTML={{ __html: phases[phaseIndex].subtext }}
               />
             </div>
           </div>
 
-          {/* right column with fixed-size wrapper so image position never shifts */}
-          <div className="relative z-10 w-full md:w-1/2 flex justify-center md:justify-end items-start mt-10 md:mt-[1rem]">
-            {/* <div className="relative w-full max-w-[640px] md:max-w-[560px] lg:max-w-[640px] aspect-[3/4] min-h-[300px]"> */}
+          {/* Right Column */}
+          <div className="relative z-10 w-full md:w-1/2 flex justify-center md:justify-end items-start mt-10 md:mt-0">
             <div
-              className={`relative w-full max-w-[640px] md:max-w-[560px] lg:max-w-[640px] aspect-[3/4] min-h-[300px]
-    ${phaseIndex === 3 ? "md:-mt-24 -mt-16" : ""} 
-    ${phaseIndex === 4 ? "md:-mt-28 -mt-24" : ""}`}
+              className={`relative w-full max-w-[90%] sm:max-w-[500px] md:max-w-[540px] lg:max-w-[600px] aspect-[3/4] min-h-[280px]
+          ${phaseIndex === 3 ? "md:-mt-12 -mt-8" : ""} 
+          ${phaseIndex === 4 ? "md:-mt-16 -mt-10" : ""}`}
             >
-              {/* bottom image (current) */}
+              {/* Bottom Image */}
               <img
                 ref={imageBottomRef}
                 alt="evolution"
@@ -930,7 +926,7 @@ const SixthPage = () => {
                 loading="eager"
                 style={{ opacity: 1 }}
               />
-              {/* top image (incoming) */}
+              {/* Top Image */}
               <img
                 ref={imageTopRef}
                 alt="evolution transition"
