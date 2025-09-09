@@ -403,11 +403,11 @@ const ToolkitPage = () => {
       {
         subheading: "quiz",
         subtext: "quick challenges that help you \nsee how remarkable you are."
-      },
-      {
-        subheading: "course",
-        subtext: "trimester-based, hands-on, \nwith a paid internship pathway."
       }
+      // {
+      //   subheading: "course",
+      //   subtext: "trimester-based, hands-on, \nwith a paid internship pathway."
+      // }
     ],
     []
   );
